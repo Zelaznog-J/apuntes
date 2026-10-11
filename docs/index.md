@@ -10,7 +10,7 @@ Apuntes de **Análisis**, **GeoComputación con Python** y **Teledetección**, o
 | --- | --- |
 | [Análisis](01-analisis/index.md) | Estadística y métodos para describir y modelar datos. |
 | [GeoComputación con Python](02-geocomputacion/index.md) | Datos vectoriales y ráster con el ecosistema geoespacial de Python. |
-| [Teledetección](03-teledeteccion/index.md) | Fundamentos físicos, imágenes satelitales e índices espectrales. |
+| [Teledetección](03-teledeteccion/index.md) | Teledetección satelital aplicada a la agronomía: índices, series de tiempo, machine learning y zonas de manejo. |
 
 ## Cómo leer los capítulos
 
