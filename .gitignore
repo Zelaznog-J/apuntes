@@ -5,3 +5,7 @@ __pycache__/
 Thumbs.db
 .vscode/
 .cache/
+
+# Salidas generadas por los notebooks de laboratorio
+docs/**/salidas_lab_curvas/
+*.zip

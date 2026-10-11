@@ -44,6 +44,8 @@ markdown_extensions:
       anchor_linenums: true
   - pymdownx.inlinehilite
   - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
   - pymdownx.arithmatex:
       generic: true
 
@@ -64,14 +66,26 @@ nav:
       - Estadística descriptiva: 01-analisis/01-estadistica-descriptiva.md
   - GeoComputación con Python:
       - 02-geocomputacion/index.md
-      - Datos vectoriales: 02-geocomputacion/01-vectores.ipynb
+      - 1. Panorama: 02-geocomputacion/01-panorama.md
+      - 2. Datos geográficos: 02-geocomputacion/02-datos-geograficos.ipynb
+      - 3. Operaciones con atributos: 02-geocomputacion/03-atributos.md
+      - 4. Operaciones espaciales: 02-geocomputacion/04-operaciones-espaciales.md
+      - 5. Operaciones geométricas: 02-geocomputacion/05-operaciones-geometricas.md
+      - 6. Interacciones ráster–vector: 02-geocomputacion/06-raster-vector.md
+      - 7. Reproyección: 02-geocomputacion/07-reproyeccion.md
+      - 8. Lectura y escritura: 02-geocomputacion/08-lectura-escritura.md
+      - 9. Curvas de nivel:
+          - 02-geocomputacion/09-curvas-de-nivel/index.md
+          - 9.1 GDAL y Python: 02-geocomputacion/09-curvas-de-nivel/gdal-y-python.md
+          - 9.2 Laboratorio: 02-geocomputacion/09-curvas-de-nivel/laboratorio.ipynb
+      - 10. Datos a escala: 02-geocomputacion/10-datos-a-escala.md
   - Teledetección:
       - 03-teledeteccion/index.md
       - 1. Fundamentos de teledetección: 03-teledeteccion/01-fundamentos.md
       - 2. Evolución y apertura de los datos: 03-teledeteccion/02-evolucion-datos.md
       - 3. Índices de vegetación: 03-teledeteccion/03-indices-vegetacion.md
       - 4. Introducción a Python: 03-teledeteccion/04-python.md
-      - "4. Notebook guía": 03-teledeteccion/04-python-notebook.ipynb
+      - "4.1 Notebook guía": 03-teledeteccion/04-python-notebook.ipynb
       - 5. Acceso a imágenes con Python: 03-teledeteccion/05-acceso-imagenes.md
       - 6. Procesamiento raster: 03-teledeteccion/06-procesamiento-raster.md
       - 7. Series de tiempo y anomalías: 03-teledeteccion/07-series-tiempo.md
