@@ -1,0 +1,69 @@
+site_name: Apuntes de Geociencia de Datos
+site_description: Apuntes de Análisis, GeoComputación con Python y Teledetección
+site_author: Javiera González Mardones
+site_url: https://zelaznog-j.github.io/apuntes/
+repo_url: https://github.com/Zelaznog-J/apuntes
+repo_name: Zelaznog-J/apuntes
+edit_uri: edit/main/docs/
+
+theme:
+  name: material
+  custom_dir: overrides
+  language: es
+  font:
+    text: Manrope
+  palette:
+    primary: custom
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.indexes
+    - navigation.footer
+    - navigation.top
+    - toc.follow
+    - search.highlight
+    - content.code.copy
+
+extra_css:
+  - stylesheets/extra.css
+
+extra_javascript:
+  - javascripts/mathjax.js
+  - https://unpkg.com/mathjax@3.2.2/es5/tex-mml-chtml.js
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - footnotes
+  - md_in_html
+  - tables
+  - toc:
+      permalink: true
+  - pymdownx.details
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.superfences
+  - pymdownx.arithmatex:
+      generic: true
+
+plugins:
+  - search:
+      lang: es
+  - mkdocs-jupyter:
+      execute: false
+      include_source: true
+      ignore_h1_titles: true
+
+nav:
+  - Portafolio: https://zelaznog-j.github.io/
+  - Inicio: index.md
+  - Análisis:
+      - 01-analisis/index.md
+      - Estadística descriptiva: 01-analisis/01-estadistica-descriptiva.md
+  - GeoComputación con Python:
+      - 02-geocomputacion/index.md
+      - Datos vectoriales: 02-geocomputacion/01-vectores.ipynb
+  - Teledetección:
+      - 03-teledeteccion/index.md
+      - Fundamentos espectrales: 03-teledeteccion/01-fundamentos-espectrales.md
