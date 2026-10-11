@@ -39,6 +39,8 @@ Al terminar, podrás:
 - Ráster a puntos.
 - Ráster a curvas de nivel: puente al [capítulo 9](09-curvas-de-nivel/index.md).
 
+![Vectorización de un ráster categórico en polígonos con borde en escalera y de un ráster continuo en curvas de nivel](img/06-vectorizacion.webp)
+
 **5. Distancia a la geometría más cercana**
 
 

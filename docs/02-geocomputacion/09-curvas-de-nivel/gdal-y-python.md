@@ -34,6 +34,8 @@ Piensa en una planilla de cálculo gigante donde cada celda guarda **una altura*
 
 Queremos pasar de **celdas** (datos ráster) a **líneas** (datos vectoriales) que unan puntos de igual altura. En el camino ocurre un cambio importante: el ráster solo conoce alturas en el *centro* de cada celda, pero la curva debe pasar *entre* celdas. Para ubicarla se **interpola**.
 
+![Grilla de 3×3 píxeles con la elevación en el centro de cada uno y curvas calculadas entre los centros](../img/09-centros-pixel.webp)
+
 ### 1.3 La receta universal en tres pasos
 
 Tanto GDAL como Python hacen, en el fondo, lo mismo:
@@ -57,6 +59,10 @@ Supón que quieres la curva de **20 m**. Para cada celda preguntas: ¿su altura 
 ### 2.2 Paso B: mirar de a cuatro
 
 Se toman cuatro celdas vecinas que forman un cuadrado (sus centros son las esquinas del cuadrado). Hay 16 combinaciones posibles de "sobre/bajo". Algunas no tienen curva (las cuatro sobre o las cuatro bajo). Otras tienen una línea que corta el cuadrado por dos de sus lados.
+
+Para identificar cada combinación, a cada esquina se le asigna un peso (8, 4, 2, 1) y se suman los de las esquinas que están sobre el nivel. El número resultante, de 0 a 15, indica qué segmento dibujar:
+
+![Los 16 casos de marching squares, con las esquinas sobre y bajo el umbral y el segmento de curva en cada caso](../img/09-marching-squares.webp)
 
 ### 2.3 Paso C: ubicar el cruce con precisión
 

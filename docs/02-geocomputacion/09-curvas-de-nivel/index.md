@@ -62,6 +62,10 @@ Estas reglas permiten interpretar y también **detectar errores** en un mapa:
 6. En un valle o cauce, las curvas forman **"V" que apuntan aguas arriba**. En una loma o espolón forman "V" que apuntan **hacia abajo**.
 7. Curvas concéntricas cerradas indican una cima o una depresión; para distinguirlas se usan las cotas o los trazos de depresión.
 
+![Bloque de relieve con dos cumbres, un portezuelo y una hondonada, y su mapa de curvas de nivel](../img/09-relieve-curvas.webp)
+
+En la figura, las dos cumbres aparecen como curvas concéntricas cerradas; el portezuelo, como el punto donde las curvas de ambas cumbres casi se tocan; y la hondonada, como curvas cerradas con trazos hacia el interior. El agua escurre perpendicular a las curvas.
+
 > **Imagen sugerida 3:** Mosaico de 6 mini-mapas de curvas de nivel con su perfil topográfico al lado: (a) ladera uniforme, (b) ladera cóncava, (c) ladera convexa, (d) valle en V, (e) loma, (f) depresión cerrada. Ubicación: al final de 2.2. Incluir flechas de escurrimiento en cada caso.
 
 ---
