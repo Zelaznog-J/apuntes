@@ -64,3 +64,6 @@ nav:
   - GeoComputación con Python:
       - geocomputacion/index.md
       - 1. Datos geográficos: geocomputacion/cap01-datos-geograficos.md
+      - 2. Operaciones con atributos: geocomputacion/cap02-operaciones-atributos.md
+      - 3. Operaciones espaciales: geocomputacion/cap03-operaciones-espaciales.md
+      - 4. Operaciones geométricas: geocomputacion/cap04-operaciones-geometricas.md
