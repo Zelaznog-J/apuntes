@@ -1,3 +1,18 @@
 # GeoComputación con Python
 
-Apuntes del libro: Geocomputación con Python de Dorman, M., Graser, A., Nowosad, J., & Lovelace, R. (2025). Disponible en: https://py.geocompx.org/
+El libro *Geocomputation with Python* (Dorman, Graser, Nowosad y Lovelace, 2025; Chapman & Hall/CRC, serie The Python Series) enseña a analizar datos geográficos con Python de forma reproducible y con software de código abierto. Se inspira en el movimiento FOSS4G (software libre para geoespacial). Más que un manual de una librería, recorre el flujo de trabajo con datos espaciales. Parte de cómo se representan, pasa por manipularlos, analizarlos y transformarlos, y termina en cómo leerlos, escribirlos y visualizarlos.
+
+En esta sección encontrarás apuntes y resúmenes de lo que he aprendido con el libro.
+
+## El contenido del libro
+
+1. **Datos geográficos en Python:** modelos vectorial y ráster, y el papel del CRS.
+2. **Operaciones con atributos:** filtrar, agregar y unir tablas con geometría.
+3. **Operaciones espaciales:** relaciones entre geometrías, uniones espaciales y álgebra de mapas.
+4. **Operaciones geométricas:** simplificar, centroides, buffers, transformaciones y recortes.
+5. **Interacciones ráster-vector:** enmascarar, recortar, extraer valores y convertir entre ambos modelos.
+6. **Reproyección:** sistemas de referencia, transformación de coordenadas y remuestreo de rásteres.
+7. **E/S de datos:** lectura y escritura de datos geográficos.
+8. **Mapas con Python:** visualización cartográfica.
+
+Libro original: [py.geocompx.org](https://py.geocompx.org/)
