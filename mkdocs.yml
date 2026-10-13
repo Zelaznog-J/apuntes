@@ -61,3 +61,5 @@ plugins:
 nav:
   - Portafolio: https://zelaznog-j.github.io/
   - Inicio: index.md
+  - GeoComputación con Python:
+      - geocomputacion/index.md
