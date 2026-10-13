@@ -1,4 +1,4 @@
-# Apuntes de Geociencia de Datos
+# Apuntes de Ciencia de Datos Geoespaciales
 
 [← Volver al portafolio](https://zelaznog-j.github.io/)
 
