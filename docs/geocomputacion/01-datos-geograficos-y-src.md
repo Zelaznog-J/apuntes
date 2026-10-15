@@ -855,41 +855,11 @@ ráster = valores + transformación espacial + CRS
 
 ---
 
-## 31. Síntesis conceptual
+## 31. Esquema conceptual
 
-```text
-DATOS GEOGRÁFICOS
-│
-├── VECTORIALES
-│   ├── puntos
-│   ├── líneas
-│   └── polígonos
-│
-└── RÁSTER
-    ├── filas
-    ├── columnas
-    ├── píxeles
-    └── resolución
+![Esquema del flujo de trabajo con datos espaciales en Python](img/esquema-geocomputacion.webp)
 
-
-TODOS NECESITAN REFERENCIA ESPACIAL
-                │
-                ↓
-               CRS
-                │
-       ┌────────┴─────────┐
-       ↓                  ↓
-  GEOGRÁFICO          PROYECTADO
-  lon / lat              x / y
-   grados              normalmente m
-       │                  │
-       ↓                  ↓
-localización global   análisis geométrico
-                     distancia / área / buffer
-```
-
-La idea central es que **la geometría, las coordenadas y el CRS forman un sistema inseparable**. Para un profesional del área agrícola, comprender esta relación es esencial antes de analizar imágenes satelitales, superficies prediales, información de suelos, redes de riego, variables climáticas o datos de agricultura de precisión.
-
+El esquema resume cómo se conectan los temas del libro. Todo parte de los **datos espaciales**, que se representan como **vector** (puntos, líneas y polígonos, con GeoPandas y Shapely) o como **ráster** (celdas, con Rasterio y NumPy). Sobre ellos se hace el **análisis espacial**, que se divide en tres frentes: los **atributos** (filtros, `groupby`, `dissolve`, `merge`), las **relaciones espaciales** (`intersects`, `within`, `contains`, `sjoin`) y la **geometría** (`buffer`, `centroid`, `simplify`, `intersection`, `clip`). A continuación vienen el **álgebra ráster** (operaciones locales, focales, zonales y globales) y la **interacción ráster-vector** (máscara y recorte, extracción, rasterización y vectorización). Todo el flujo se apoya en el **CRS y la reproyección**, que definen las unidades, las distancias y las áreas, y garantizan que las capas estén alineadas.
 ---
 
 ## Referencias
