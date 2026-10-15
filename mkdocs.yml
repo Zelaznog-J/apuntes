@@ -63,9 +63,4 @@ nav:
   - Inicio: index.md
   - GeoComputación con Python:
       - geocomputacion/index.md
-      - 1. Datos geográficos: geocomputacion/cap01-datos-geograficos.md
-      - 2. Operaciones con atributos: geocomputacion/cap02-operaciones-atributos.md
-      - 3. Operaciones espaciales: geocomputacion/cap03-operaciones-espaciales.md
-      - 4. Operaciones geométricas: geocomputacion/cap04-operaciones-geometricas.md
-      - 5. Interacciones ráster-vector: geocomputacion/cap05-interacciones-raster-vector.md
-      - 6. CRS y reproyección: geocomputacion/cap06-crs-reproyeccion.md
+      - 1. Datos geográficos y SRC: geocomputacion/01-datos-geograficos-y-src.md
