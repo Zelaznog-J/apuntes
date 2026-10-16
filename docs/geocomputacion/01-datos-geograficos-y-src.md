@@ -15,7 +15,11 @@ Este material introduce los modelos vectorial y ráster, su representación en P
 
 Se utiliza **SRC** (sistema de referencia de coordenadas) y su equivalente inglés **CRS** (*Coordinate Reference System*). Los ejemplos de código requieren Python con GeoPandas, Shapely, Rasterio y NumPy. Las primeras secciones contienen fragmentos explicativos; el ejemplo de la sección 8 es autónomo y utiliza datos sintéticos.
 
+--- 
+
 ## 2. Dos modelos para representar el territorio
+
+![Vectorial vs Ráster](img/vector-vs-raster.png)
 
 ### 2.1. Modelo vectorial: entidades con geometría y atributos
 
@@ -55,6 +59,8 @@ Los vectores resultan prácticos para límites y redes; los rásteres, para supe
 
 Un análisis habitual combina **polígonos de parcelas + ráster de vegetación**, extrayendo una estadística para cada polígono. Antes de hacerlo hay que comprobar ubicación, CRS, resolución y datos válidos.
 
+---
+
 ## 3. De las coordenadas a una posición interpretable
 
 El par `(-73.05, -36.82)` no identifica por sí solo una posición inequívoca. Se necesitan las unidades, los ejes y el sistema que relaciona esas coordenadas con la Tierra.
@@ -74,6 +80,8 @@ Las alturas necesitan su propia referencia. La altura elipsoidal de un receptor 
 
 ### 3.2. CRS geográficos y proyectados
 
+![CRS geográfica a CRS proyectado](img/cuadricula_hand_drawn.webp)
+
 Un **CRS geográfico** utiliza coordenadas angulares. La longitud expresa la posición angular respecto del meridiano de referencia; la latitud geodésica es el ángulo entre la normal al elipsoide y el plano ecuatorial. En el ejemplo, longitud y latitud negativas indican oeste y sur, respectivamente.
 
 Un **CRS proyectado** representa posiciones sobre un plano mediante coordenadas como Este y Norte. Se deriva de un CRS geográfico usando una proyección y parámetros específicos. Sus unidades son lineales, frecuentemente metros, aunque también pueden ser pies.
@@ -88,9 +96,13 @@ Un grado de longitud representa distancias terrestres diferentes según la latit
 
 **WKT** (*Well-Known Text*) permite expresar una definición extensa de CRS: referencia, elipsoide, ejes, unidades y, cuando corresponde, proyección y parámetros. Algunos CRS personalizados no tienen código EPSG. WKT también se usa para describir geometrías; son usos distintos del mismo nombre.
 
+--- 
+
 ## 4. Elegir el CRS según el territorio y la operación
 
 ### 4.1. Qué distorsiona una proyección
+
+![Proyecciones](img/proyecciones.png)
 
 Toda proyección introduce deformaciones. Tener unidades métricas permite interpretar unidades, pero no garantiza que cualquier medición sea adecuada en cualquier territorio.
 
