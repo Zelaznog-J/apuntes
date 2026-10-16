@@ -117,6 +117,9 @@ Por ejemplo, dos proyecciones métricas pueden dar superficies distintas para un
 
 ### 4.2. UTM: justificar zona, hemisferio y datum
 
+![UTM Zona Sur](img/utm_huso.jfif)
+
+
 UTM (*Universal Transverse Mercator*) es un sistema de proyecciones conformes organizado en 60 zonas longitudinales, generalmente de 6° de ancho. Es frecuente en análisis locales, dentro de su ámbito de uso, aproximadamente entre 80° S y 84° N.
 
 Para el punto ilustrativo `(-73.05, -36.82)`:
