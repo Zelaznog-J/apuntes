@@ -229,6 +229,8 @@ Los CRS se dividen principalmente en:
 1. **CRS geográficos**
 2. **CRS proyectados**
 
+![Sistema de coordenadas proyectadas](img/cuadricula_hand_drawn.webp)
+
 ---
 
 ## 9. Sistemas de coordenadas geográficos
@@ -253,56 +255,7 @@ Las unidades son **grados**, no metros.
 
 Esto es importante porque un grado no representa una distancia constante en todas las regiones del planeta.
 
----
-
-## 10. Elipsoide, datum y geoide
-
-### 10.1 Elipsoide
-
-La Tierra no es una esfera perfecta. Una aproximación más adecuada es un **elipsoide**, definido principalmente mediante sus dimensiones ecuatorial y polar.
-
-### 10.2 Datum
-
-El **datum geodésico** define cómo ese elipsoide se posiciona y relaciona con la Tierra.
-
-En términos simples:
-
-> El elipsoide describe una superficie matemática; el datum establece cómo esa superficie se relaciona con la Tierra real.
-
-### 10.3 Geoide
-
-El **geoide** puede entenderse como una representación física de la superficie equipotencial asociada aproximadamente al nivel medio global del mar.
-
-
-![Geoide](img/geoide.png)
-
----
-
-## 11. WGS 84
-
-Uno de los sistemas más importantes en análisis geoespacial es:
-
-**WGS 84 — EPSG:4326**
-
-Es ampliamente utilizado por:
-
-- GPS;
-- bases de datos globales;
-- aplicaciones web;
-- numerosos productos vectoriales y ráster.
-
-En Python puede aparecer como:
-
-```text
-Geographic 2D CRS: EPSG:4326
-Name: WGS 84
-Latitude: degree
-Longitude: degree
-```
-
----
-
-## 12. Sistemas de coordenadas proyectados
+## 10. Sistemas de coordenadas proyectados
 
 Para representar la Tierra sobre un plano se utiliza una **proyección cartográfica**.
 
@@ -326,10 +279,12 @@ Ejemplo:
 Easting: 682350 m
 Northing: 5924100 m
 ```
-![Sistema de coordenadas proyectadas](img/cuadricula_hand_drawn.webp)
+
 ---
 
-## 13. Toda proyección introduce distorsión
+## 11. Toda proyección introduce distorsión
+
+![Proyecciones](img/proyecciones.png)
 
 No es posible transformar una superficie curva en un plano sin introducir deformaciones.
 
@@ -357,7 +312,7 @@ sino:
 
 ---
 
-## 14. Ejemplo agronómico: superficie de un predio
+## 12. Ejemplo agronómico: superficie de un predio
 
 Supongamos que queremos calcular la superficie de un predio agrícola y tenemos sus límites en:
 
@@ -393,7 +348,7 @@ hectáreas
 
 ---
 
-## 15. El sistema UTM
+## 13. El sistema UTM
 
 Uno de los sistemas proyectados más utilizados para análisis locales y regionales es **UTM — Universal Transverse Mercator**.
 
@@ -420,7 +375,7 @@ Siempre debe utilizarse la zona UTM adecuada para el área de estudio.
 
 ---
 
-## 16. Importancia agronómica del CRS
+## 14. Importancia agronómica del CRS
 
 Supongamos que queremos responder:
 
@@ -450,7 +405,7 @@ el valor se interpretaría en grados, por lo que el resultado sería incorrecto 
 
 ---
 
-## 17. Compatibilidad espacial entre capas
+## 15. Compatibilidad espacial entre capas
 
 Supongamos que disponemos de:
 
@@ -475,7 +430,7 @@ debemos comprobar sus CRS.
 
 ---
 
-## 18. ¿Qué es EPSG?
+## 16. ¿Qué es EPSG?
 
 Los CRS se identifican de forma estandarizada mediante expresiones como:
 
@@ -493,7 +448,7 @@ Un código EPSG actúa como identificador de una definición formal de sistema d
 
 ---
 
-## 19. EPSG versus WKT
+## 17. EPSG versus WKT
 
 Aunque identificadores como `EPSG:4326` son muy prácticos, un CRS contiene más información.
 
@@ -512,7 +467,7 @@ En el trabajo cotidiano no es necesario memorizar la definición WKT completa, p
 
 ---
 
-## 20. CRS en Python
+## 18. CRS en Python
 
 En GeoPandas, el CRS puede consultarse mediante:
 
@@ -538,15 +493,9 @@ Para obtener la autoridad y código:
 world.crs.to_authority()
 ```
 
-Un resultado posible sería:
-
-```text
-('EPSG', '4326')
-```
-
 ---
 
-## 21. `set_crs()` no es lo mismo que `to_crs()`
+## 19. `set_crs()` no es lo mismo que `to_crs()`
 
 ### `set_crs()`
 
@@ -570,22 +519,15 @@ Transforma las coordenadas desde un CRS a otro.
 gdf_utm = gdf.to_crs(32718)
 ```
 
-Conceptualmente:
-
 ```text
-set_crs()
-↓
-define qué significan los números
-
 to_crs()
 ↓
-calcula nuevos números para representar
-la misma localización en otro CRS
+Reproyección
 ```
 
 ---
 
-## 22. Reproyección
+## 20. Reproyección
 
 La **reproyección** consiste en transformar las coordenadas desde un CRS hacia otro conservando la localización geográfica de las entidades.
 
@@ -609,7 +551,7 @@ Las coordenadas cambian, pero la posición geográfica representada sigue siendo
 
 ---
 
-## 23. El CRS adecuado depende del objetivo
+## 21. El CRS adecuado depende del objetivo
 
 No existe un único CRS óptimo para todas las tareas.
 
@@ -626,7 +568,7 @@ Dentro de un mismo proyecto es válido utilizar distintos CRS para distintas eta
 
 ---
 
-## 24. Caso aplicado: agricultura de precisión
+## 22. Caso aplicado: agricultura de precisión
 
 Supongamos que disponemos de:
 
@@ -659,7 +601,7 @@ Un análisis puede ser estadísticamente correcto y, aun así, ser geográficame
 
 ---
 
-## 25. Errores frecuentes
+## 21. Errores frecuentes
 
 ### Error 1: creer que las coordenadas contienen por sí solas toda la información
 
@@ -706,7 +648,7 @@ WGS84 es muy útil para intercambio y posicionamiento global, pero no necesariam
 
 ---
 
-## 26. Secuencia recomendada antes de cualquier análisis
+## 22. Secuencia recomendada antes de cualquier análisis
 
 Un hábito recomendable es comenzar con:
 
@@ -805,46 +747,11 @@ ráster = valores + transformación espacial + CRS
 
 ---
 
-## 29. Ideas clave para estudiar
-
-1. Los datos geográficos combinan información temática con localización espacial.
-2. Vector y ráster son modelos diferentes pero complementarios.
-3. Las coordenadas solo son interpretables correctamente cuando conocemos su CRS.
-4. Un CRS geográfico utiliza coordenadas angulares, normalmente longitud y latitud.
-5. Un CRS proyectado utiliza coordenadas cartesianas sobre una representación plana.
-6. Toda proyección introduce algún tipo de distorsión.
-7. El CRS apropiado depende del propósito del análisis.
-8. Para calcular distancias, áreas y buffers con geometría planar, normalmente necesitamos un CRS proyectado adecuado.
-9. `set_crs()` define el CRS; `to_crs()` transforma las coordenadas.
-10. Antes de combinar capas espaciales debemos comprobar que sus sistemas de referencia sean compatibles.
-
----
-
-## 30. Preguntas de autoevaluación
-
-1. ¿Qué diferencia fundamental existe entre un dato convencional y un dato geográfico?
-2. ¿Qué tipos de geometría utiliza el modelo vectorial?
-3. ¿Qué representa una celda en un modelo ráster?
-4. ¿Qué significa resolución espacial?
-5. ¿Qué información necesita un ráster para ubicarse correctamente sobre la Tierra?
-6. ¿Qué es un sistema de referencia de coordenadas?
-7. ¿Cuál es la diferencia entre un CRS geográfico y uno proyectado?
-8. ¿En qué unidades se expresan normalmente las coordenadas de EPSG:4326?
-9. ¿Qué función cumple un datum?
-10. ¿Por qué las proyecciones producen distorsiones?
-11. ¿Por qué no deberíamos calcular directamente la superficie de una parcela en EPSG:4326?
-12. ¿Qué es un código EPSG?
-13. ¿Cuál es la diferencia entre `set_crs()` y `to_crs()`?
-14. ¿Qué debería hacerse antes de calcular un buffer de 100 m?
-15. ¿Por qué dos capas del mismo territorio podrían no superponerse correctamente?
-
----
-
-## 31. Esquema conceptual
+## . Síntesis conceptual
 
 ![Esquema del flujo de trabajo con datos espaciales en Python](img/esquema-geocomputacion.webp)  
 <small>
-El esquema resume cómo se conectan los temas del libro. Todo parte de los **datos espaciales**, que se representan como **vector** (puntos, líneas y polígonos, con GeoPandas y Shapely) o como **ráster** (celdas, con Rasterio y NumPy). Sobre ellos se hace el **análisis espacial**, que se divide en tres frentes: los **atributos** (filtros, `groupby`, `dissolve`, `merge`), las **relaciones espaciales** (`intersects`, `within`, `contains`, `sjoin`) y la **geometría** (`buffer`, `centroid`, `simplify`, `intersection`, `clip`). A continuación vienen el **álgebra ráster** (operaciones locales, focales, zonales y globales) y la **interacción ráster-vector** (máscara y recorte, extracción, rasterización y vectorización). Todo el flujo se apoya en el **CRS y la reproyección**, que definen las unidades, las distancias y las áreas, y garantizan que las capas estén alineadas.
+Todo parte de los **datos espaciales**, que se representan como **vector** (puntos, líneas y polígonos, con GeoPandas y Shapely) o como **ráster** (celdas, con Rasterio y NumPy). Sobre ellos se hace el **análisis espacial**, que se divide en tres frentes: los **atributos** (filtros, `groupby`, `dissolve`, `merge`), las **relaciones espaciales** (`intersects`, `within`, `contains`, `sjoin`) y la **geometría** (`buffer`, `centroid`, `simplify`, `intersection`, `clip`). A continuación vienen el **álgebra ráster** (operaciones locales, focales, zonales y globales) y la **interacción ráster-vector** (máscara y recorte, extracción, rasterización y vectorización). Todo el flujo se apoya en el **CRS y la reproyección**, que definen las unidades, las distancias y las áreas, y garantizan que las capas estén alineadas.
 </small>
 ---
 
