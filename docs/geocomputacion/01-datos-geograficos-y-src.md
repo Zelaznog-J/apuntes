@@ -51,6 +51,8 @@ Existen dos formas principales de representar la información espacial:
 1. **Modelo vectorial**
 2. **Modelo ráster**
 
+![Representación vectorial vs ráster](img/vector-vs-raster.png)
+
 ### 3.1 Modelo vectorial
 
 El modelo vectorial representa entidades mediante geometrías construidas a partir de coordenadas.
@@ -73,12 +75,6 @@ Ejemplos agronómicos:
 - pozos;
 - trampas de insectos;
 - puntos de medición GPS.
-
-```text
-Punto de suelo
-      ●
-    (x, y)
-```
 
 #### Líneas
 
@@ -277,19 +273,8 @@ En términos simples:
 
 El **geoide** puede entenderse como una representación física de la superficie equipotencial asociada aproximadamente al nivel medio global del mar.
 
-Una relación simplificada sería:
 
-```text
-Superficie terrestre real
-          ↓
-        Geoide
-          ↓
-       Elipsoide
-          ↓
-        Datum
-          ↓
-          CRS
-```
+![Geoide](img/geoide.png)
 
 ---
 
@@ -341,7 +326,7 @@ Ejemplo:
 Easting: 682350 m
 Northing: 5924100 m
 ```
-
+![Sistema de coordenadas proyectadas](img/cuadricula_hand_drawn.webp)
 ---
 
 ## 13. Toda proyección introduce distorsión
