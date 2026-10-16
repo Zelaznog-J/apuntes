@@ -1,752 +1,264 @@
 # Datos geográficos y sistemas de referencia de coordenadas
 
-## 1. Propósito del material
+## 1. Propósito y objetivos
 
-Este material de estudio presenta los conceptos fundamentales necesarios para comprender cómo se representan, georreferencian y analizan los datos geográficos en ciencias de datos geoespaciales.
+Los datos geográficos describen **qué existe, dónde se encuentra y cómo se distribuye**. En agronomía permiten relacionar parcelas, canales, muestreos de suelo e imágenes de vegetación para responder preguntas sobre un territorio.
 
-Los datos geográficos tienen una característica que los distingue de otros tipos de datos: además de describir **qué existe**, permiten representar **dónde se encuentra**. En ciencias agronómicas, esta dimensión espacial es especialmente relevante porque numerosas variables y procesos presentan una distribución espacial, entre ellos las propiedades del suelo, la elevación, la pendiente, la disponibilidad hídrica, el vigor de los cultivos, la productividad, la temperatura, la precipitación y la incidencia de plagas.
+Este material introduce los modelos vectorial y ráster, su representación en Python y las decisiones necesarias para medir e integrar capas correctamente. Al finalizar, deberías poder:
 
-A lo largo del documento se abordan los modelos de datos vectorial y ráster, los sistemas de referencia de coordenadas y los criterios básicos para trabajar correctamente con ellos en Python.
+- distinguir geometría, atributos, valores y metadatos;
+- explicar la relación entre elipsoide, datum, coordenadas y proyección;
+- interpretar un CRS y justificar su elección para un área y una operación;
+- diferenciar asignación de CRS, reproyección y remuestreo;
+- reconocer la georreferenciación, alineación y ausencia de datos en un ráster;
+- seguir un análisis reproducible de superficie próxima a un canal.
 
-### Objetivos de aprendizaje
+Se utiliza **SRC** (sistema de referencia de coordenadas) y su equivalente inglés **CRS** (*Coordinate Reference System*). Los ejemplos de código requieren Python con GeoPandas, Shapely, Rasterio y NumPy. Las primeras secciones contienen fragmentos explicativos; el ejemplo de la sección 8 es autónomo y utiliza datos sintéticos.
 
-Después de estudiar este material, se espera que el lector pueda:
+## 2. Dos modelos para representar el territorio
 
-- distinguir datos espaciales vectoriales y ráster;
-- reconocer los componentes espaciales y de atributos de un conjunto de datos;
-- comprender qué representa un sistema de referencia de coordenadas o **CRS/SRC**;
-- distinguir sistemas de coordenadas geográficos y proyectados;
-- comprender los conceptos de latitud, longitud, elipsoide, datum y proyección;
-- interpretar códigos EPSG;
-- reconocer por qué el CRS condiciona los cálculos de distancia, superficie y buffer;
-- consultar y transformar CRS utilizando Python.
+### 2.1. Modelo vectorial: entidades con geometría y atributos
 
----
+Cada entidad ocupa una fila de una tabla y tiene una geometría asociada.
 
-## 2. ¿Qué son los datos geográficos?
-
-Un **dato geográfico** representa una entidad, característica o fenómeno que posee una localización espacial.
-
-Podemos considerar dos componentes principales:
-
-- **Componente espacial o geométrico:** indica dónde está la entidad y, eventualmente, cuál es su forma.
-- **Componente de atributos:** contiene las características descriptivas asociadas a esa entidad.
-
-Por ejemplo:
-
-| parcela | cultivo | superficie_ha | rendimiento_t_ha | geometría |
-|---|---|---:|---:|---|
-| A01 | Trigo | 12.4 | 6.8 | Polígono |
-| A02 | Maíz | 8.7 | 11.2 | Polígono |
-| A03 | Pradera | 21.3 | 9.4 | Polígono |
-
-Los campos `cultivo`, `superficie_ha` y `rendimiento_t_ha` son atributos. La columna `geometría` permite conocer la localización y delimitación de cada parcela.
-
----
-
-## 3. Modelos fundamentales de datos geográficos
-
-Existen dos formas principales de representar la información espacial:
-
-1. **Modelo vectorial**
-2. **Modelo ráster**
-
-![Representación vectorial vs ráster](img/vector-vs-raster.png)
-
-### 3.1 Modelo vectorial
-
-El modelo vectorial representa entidades mediante geometrías construidas a partir de coordenadas.
-
-Las geometrías fundamentales son:
-
-- **Puntos**
-- **Líneas**
-- **Polígonos**
-
-#### Puntos
-
-Representan localizaciones cuya dimensión espacial puede considerarse despreciable respecto de la escala de análisis.
-
-Ejemplos agronómicos:
-
-- estaciones meteorológicas;
-- puntos de muestreo de suelo;
-- árboles individuales;
-- pozos;
-- trampas de insectos;
-- puntos de medición GPS.
-
-#### Líneas
-
-Representan elementos cuya principal característica espacial es su longitud.
-
-Ejemplos:
-
-- canales de riego;
-- caminos;
-- drenajes;
-- cursos de agua;
-- transectos de muestreo.
-
-#### Polígonos
-
-Representan superficies delimitadas.
-
-Ejemplos:
-
-- predios;
-- potreros;
-- cuarteles agrícolas;
-- unidades de suelo;
-- zonas de manejo;
-- cuencas hidrográficas.
-
----
-
-## 4. Modelo ráster
-
-El modelo ráster representa el espacio mediante una **matriz regular de celdas o píxeles**.
-
-Cada celda contiene un valor.
-
-Por ejemplo:
-
-```text
-105  108  110  115
-102  107  112  118
- 98  104  111  120
- 95  101  108  116
-```
-
-Si el ráster corresponde a elevación, cada número podría representar metros sobre el nivel del mar.
-
-### Ejemplos agronómicos de información ráster
-
-Un ráster puede representar variables continuas como:
-
-- elevación;
-- temperatura;
-- precipitación;
-- humedad del suelo;
-- índice NDVI;
-- reflectancia espectral;
-- productividad interpolada.
-
-También puede representar variables categóricas:
-
-- uso de suelo;
-- cobertura vegetal;
-- clases de suelo;
-- clases de aptitud agrícola.
-
----
-
-## 5. Resolución espacial en datos ráster
-
-La **resolución espacial** corresponde al tamaño de las celdas.
-
-Ejemplos:
-
-- resolución de 10 m → cada píxel representa aproximadamente 10 × 10 m;
-- resolución de 30 m → cada píxel representa aproximadamente 30 × 30 m;
-- resolución de 1 km → cada píxel representa aproximadamente 1 × 1 km.
-
-Una resolución espacial más pequeña permite representar mayor detalle, aunque implica almacenar y procesar más celdas.
-
-Conceptualmente:
-
-```text
-Ráster = matriz de valores + información de georreferenciación
-```
-
-La georreferenciación incluye:
-
-- sistema de referencia de coordenadas;
-- origen;
-- resolución;
-- dimensiones;
-- transformación espacial.
-
----
-
-## 6. Vector versus ráster
-
-| Característica | Vector | Ráster |
+| Geometría | Qué representa | Ejemplo agronómico |
 |---|---|---|
-| Representación | Puntos, líneas, polígonos | Celdas |
-| Límites discretos | Muy apropiado | Dependen de resolución |
-| Fenómenos continuos | Menos natural | Muy apropiado |
-| Parcelas agrícolas | Excelente | Posible |
-| Elevación | Posible | Excelente |
-| Imágenes satelitales | No | Excelente |
-| Redes de canales | Excelente | Posible |
-| NDVI | Posible | Excelente |
+| Punto | Una localización | Muestreo de suelo o estación meteorológica |
+| Línea | Una trayectoria | Canal, camino o drenaje |
+| Polígono | Una superficie delimitada | Parcela, predio o zona de manejo |
 
-En ciencias ambientales y agrícolas es habitual trabajar con ambos modelos simultáneamente.
+La elección depende de la escala: un árbol puede representarse como punto en un predio o como polígono de copa en un estudio detallado. Las geometrías múltiples, como `MultiPolygon`, permiten representar varias partes dentro de una misma entidad.
 
-```text
-Imagen Sentinel-2      → ráster
-Límite de un predio    → vector
-Muestreos de suelo     → puntos vectoriales
-Red de drenaje         → líneas vectoriales
-Modelo de elevación    → ráster
-```
+| parcela | cultivo | rendimiento_t_ha | geometría |
+|---|---|---:|---|
+| A01 | Trigo | 6.8 | Polígono |
+| A02 | Maíz | 11.2 | Polígono |
 
----
+`cultivo` y `rendimiento_t_ha` son atributos; la geometría contiene las coordenadas que delimitan cada parcela. Una superficie guardada como atributo puede proceder de otra fuente o fecha: no equivale necesariamente al área calculada desde la geometría actual.
 
-## 7. El problema de las coordenadas
+### 2.2. Modelo ráster: valores sobre una cuadrícula
 
-Supongamos que encontramos el siguiente punto:
+Un ráster regular representa el espacio mediante filas y columnas de celdas. Cada celda contiene un valor **por banda**. Una imagen puede tener varias bandas, por ejemplo rojo e infrarrojo cercano.
 
-```text
-(-73.05, -36.82)
-```
+| Tipo de variable | Ejemplos | Interpretación |
+|---|---|---|
+| Continua | Elevación, temperatura, reflectancia, NDVI | La magnitud numérica tiene significado |
+| Categórica | Cobertura o clase de suelo | El número identifica una categoría |
 
-Los números por sí solos no permiten interpretar completamente la posición.
+Los códigos de clases no se deben promediar como si fueran magnitudes. El promedio de los códigos «1 = bosque» y «3 = cultivo» no representa una cobertura intermedia.
 
-Necesitamos saber:
+El tamaño de celda determina la **resolución espacial de la cuadrícula**. En un CRS métrico, una celda cuadrada de 10 m ocupa 100 m² en el plano. Si la resolución se expresa en grados, su tamaño terrestre varía con la ubicación. Una cuadrícula más fina exige más memoria y no garantiza información más exacta: remuestrear un producto de 30 m a 10 m no crea observaciones nuevas.
 
-- qué representan;
-- cuál es su unidad;
-- desde qué origen se miden;
-- qué modelo de la Tierra se utiliza;
-- qué sistema de coordenadas está asociado.
+### 2.3. Cómo elegir y combinar los modelos
 
-Aquí aparece el concepto de **Sistema de Referencia de Coordenadas**.
+Los vectores resultan prácticos para límites y redes; los rásteres, para superficies muestreadas regularmente e imágenes. No son categorías excluyentes: el NDVI puede almacenarse como imagen y también como un promedio asociado a cada parcela.
 
----
+Un análisis habitual combina **polígonos de parcelas + ráster de vegetación**, extrayendo una estadística para cada polígono. Antes de hacerlo hay que comprobar ubicación, CRS, resolución y datos válidos.
 
-## 8. ¿Qué es un CRS?
+## 3. De las coordenadas a una posición interpretable
 
-Un **Coordinate Reference System (CRS)** o **Sistema de Referencia de Coordenadas (SRC)** define cómo las coordenadas de un objeto espacial se relacionan con la superficie terrestre.
+El par `(-73.05, -36.82)` no identifica por sí solo una posición inequívoca. Se necesitan las unidades, los ejes y el sistema que relaciona esas coordenadas con la Tierra.
 
-```text
-(x, y) + CRS → posición geográfica interpretable
-```
+### 3.1. Elipsoide, datum y geoide
 
-Los CRS se dividen principalmente en:
+| Concepto | Función | Relación con los demás |
+|---|---|---|
+| Elipsoide | Aproximar matemáticamente la forma terrestre mediante una superficie achatada | Proporciona la superficie sobre la que se definen coordenadas geodésicas |
+| Datum geodésico o marco de referencia | Vincular el sistema de coordenadas con la Tierra | Establece su posición y orientación; compartir elipsoide no basta para compartir referencia |
+| Geoide | Representar una superficie equipotencial del campo gravitatorio, cercana al nivel medio del mar | Sirve como referencia para determinadas alturas; no es lo mismo que un elipsoide |
+| CRS | Especificar la referencia y el sistema de coordenadas, incluidos ejes y unidades | Permite interpretar las coordenadas; un CRS proyectado incorpora además una proyección |
 
-1. **CRS geográficos**
-2. **CRS proyectados**
+La misma ubicación puede tener coordenadas distintas según el datum. Cambiar de referencia requiere una transformación adecuada; sustituir una etiqueta no mueve las coordenadas a su nueva representación. En trabajos de alta precisión también puede importar la época de las coordenadas.
 
-![Sistema de coordenadas proyectadas](img/cuadricula_hand_drawn.webp)
+Las alturas necesitan su propia referencia. La altura elipsoidal de un receptor GNSS y la elevación de un modelo del terreno no son automáticamente comparables. Esta distinción importa al integrar levantamientos y modelos digitales de elevación.
 
----
+### 3.2. CRS geográficos y proyectados
 
-## 9. Sistemas de coordenadas geográficos
+Un **CRS geográfico** utiliza coordenadas angulares. La longitud expresa la posición angular respecto del meridiano de referencia; la latitud geodésica es el ángulo entre la normal al elipsoide y el plano ecuatorial. En el ejemplo, longitud y latitud negativas indican oeste y sur, respectivamente.
 
-Un CRS geográfico representa posiciones sobre una superficie aproximadamente esférica o elipsoidal mediante:
+Un **CRS proyectado** representa posiciones sobre un plano mediante coordenadas como Este y Norte. Se deriva de un CRS geográfico usando una proyección y parámetros específicos. Sus unidades son lineales, frecuentemente metros, aunque también pueden ser pies.
 
-- **longitud**;
-- **latitud**.
+Un grado de longitud representa distancias terrestres diferentes según la latitud. Por ello, los cálculos planos de GeoPandas en longitud/latitud no producen directamente metros ni hectáreas. Los métodos geodésicos pueden medir sobre el elipsoide, pero son un enfoque diferente de los cálculos planos que se usan aquí.
 
-La longitud mide una distancia angular Este-Oeste respecto del meridiano de referencia.
+**Orden de coordenadas:** las geometrías de GeoPandas/Shapely emplean `(x, y)`; con longitud/latitud se construyen como `(longitud, latitud)`. Una definición formal de CRS puede declarar otro orden de ejes. Hay que distinguir esa definición de la convención de la biblioteca o del archivo utilizado.
 
-La latitud mide una distancia angular Norte-Sur respecto del plano ecuatorial.
+### 3.3. EPSG y WKT
 
-Ejemplo:
+`EPSG:4326` es un identificador de autoridad y código para un CRS geográfico WGS 84 de dos dimensiones. Un código **referencia una definición**, no es una fórmula de transformación ni indica por sí solo la precisión de los datos.
 
-```text
-Longitud = -73.05°
-Latitud  = -36.82°
-```
+**WKT** (*Well-Known Text*) permite expresar una definición extensa de CRS: referencia, elipsoide, ejes, unidades y, cuando corresponde, proyección y parámetros. Algunos CRS personalizados no tienen código EPSG. WKT también se usa para describir geometrías; son usos distintos del mismo nombre.
 
-Las unidades son **grados**, no metros.
+## 4. Elegir el CRS según el territorio y la operación
 
-Esto es importante porque un grado no representa una distancia constante en todas las regiones del planeta.
+### 4.1. Qué distorsiona una proyección
 
-## 10. Sistemas de coordenadas proyectados
+Toda proyección introduce deformaciones. Tener unidades métricas permite interpretar unidades, pero no garantiza que cualquier medición sea adecuada en cualquier territorio.
 
-Para representar la Tierra sobre un plano se utiliza una **proyección cartográfica**.
+| Propiedad | Qué conserva | Límite relevante |
+|---|---|---|
+| Equivalente | Superficies | Puede distorsionar formas y distancias |
+| Conforme | Ángulos y forma local | No conserva necesariamente superficies |
+| Equidistante | Determinadas distancias | No conserva todas las distancias entre cualquier par de puntos |
+| Azimutal | Direcciones respecto de un centro | La propiedad debe interpretarse en relación con ese centro |
 
-Un CRS proyectado transforma posiciones de la superficie terrestre a un sistema cartesiano:
+Por ejemplo, dos proyecciones métricas pueden dar superficies distintas para un territorio extenso. Para comparar superficies regionales conviene evaluar una proyección equivalente; para un predio pequeño puede ser suficiente un CRS local con distorsión baja. La elección depende de la tolerancia del análisis y de la extensión del área.
 
-```text
-(x, y)
-```
+### 4.2. UTM: justificar zona, hemisferio y datum
 
-o, frecuentemente:
+UTM (*Universal Transverse Mercator*) es un sistema de proyecciones conformes organizado en 60 zonas longitudinales, generalmente de 6° de ancho. Es frecuente en análisis locales, dentro de su ámbito de uso, aproximadamente entre 80° S y 84° N.
 
-```text
-(Easting, Northing)
-```
+Para el punto ilustrativo `(-73.05, -36.82)`:
 
-Sus unidades suelen ser lineales, por ejemplo metros.
+1. La longitud lo sitúa en la zona 18, cuyo intervalo ordinario es de 78° O a 72° O.
+2. La latitud lo sitúa en el hemisferio sur.
+3. Si la referencia elegida es WGS 84, el CRS es **WGS 84 / UTM zona 18S, EPSG:32718**.
 
-Ejemplo:
+El código `32718` se utiliza en este documento por esa ubicación y referencia. No es un código universal para Chile ni para todos los datos UTM. Otros datums tienen otros identificadores; un proyecto que cruza zonas o abarca una gran extensión requiere evaluar otra solución.
 
-```text
-Easting: 682350 m
-Northing: 5924100 m
-```
+### 4.3. Criterios de decisión
 
----
-
-## 11. Toda proyección introduce distorsión
-
-![Proyecciones](img/proyecciones.png)
-
-No es posible transformar una superficie curva en un plano sin introducir deformaciones.
-
-Una proyección puede alterar:
-
-- superficie;
-- distancia;
-- dirección;
-- forma.
-
-Según la propiedad que preservan, pueden distinguirse proyecciones:
-
-- **equivalentes o equal-area**: preservan superficie;
-- **equidistantes**: preservan determinadas distancias;
-- **conformes**: preservan localmente formas y ángulos;
-- **azimutales**: preservan determinadas direcciones.
-
-Por ello, la pregunta correcta no es:
-
-> ¿Cuál es la mejor proyección?
-
-sino:
-
-> **¿Qué propiedad necesito preservar para mi análisis?**
-
----
-
-## 12. Ejemplo agronómico: superficie de un predio
-
-Supongamos que queremos calcular la superficie de un predio agrícola y tenemos sus límites en:
-
-```text
-EPSG:4326
-```
-
-Si aplicamos directamente:
-
-```python
-predio.area
-```
-
-el resultado estará expresado en unidades asociadas al CRS geográfico, no en metros cuadrados.
-
-Para obtener una superficie útil en agricultura:
-
-```text
-Predio en EPSG:4326
-        ↓
-reproyección
-        ↓
-CRS proyectado apropiado
-        ↓
-cálculo de área
-        ↓
-m²
-        ↓
-÷ 10 000
-        ↓
-hectáreas
-```
-
----
-
-## 13. El sistema UTM
-
-Uno de los sistemas proyectados más utilizados para análisis locales y regionales es **UTM — Universal Transverse Mercator**.
-
-La Tierra se divide longitudinalmente en zonas. Cada zona utiliza una proyección adaptada a su región para reducir distorsiones.
-
-Las coordenadas suelen expresarse en:
-
-```text
-Easting
-Northing
-```
-
-y normalmente utilizan metros como unidad.
-
-Esto permite realizar cálculos como:
-
-```python
-distancia = puntos.distance(otro_punto)
-area = parcelas.area
-buffer = canales.buffer(100)
-```
-
-Siempre debe utilizarse la zona UTM adecuada para el área de estudio.
-
----
-
-## 14. Importancia agronómica del CRS
-
-Supongamos que queremos responder:
-
-> ¿Qué superficie cultivada se encuentra a menos de 100 metros de un canal de riego?
-
-El procedimiento conceptual sería:
-
-```text
-Canal
-  ↓
-buffer de 100 m
-  ↓
-intersección con parcelas agrícolas
-  ↓
-cálculo de superficie
-```
-
-El valor `100` representa 100 metros solo si las unidades del CRS son metros.
-
-Si los datos están en EPSG:4326:
-
-```python
-canal.buffer(100)
-```
-
-el valor se interpretaría en grados, por lo que el resultado sería incorrecto para un buffer de 100 m.
-
----
-
-## 15. Compatibilidad espacial entre capas
-
-Supongamos que disponemos de:
-
-```text
-Parcelas agrícolas     → EPSG:A
-Imagen satelital       → EPSG:B
-Modelo de elevación    → EPSG:C
-```
-
-Aunque representen el mismo territorio, no necesariamente pueden combinarse correctamente mientras utilicen diferentes sistemas de referencia.
-
-Antes de realizar:
-
-- intersecciones;
-- extracción ráster;
-- recortes;
-- joins espaciales;
-- distancias;
-- buffers;
-
-debemos comprobar sus CRS.
-
----
-
-## 16. ¿Qué es EPSG?
-
-Los CRS se identifican de forma estandarizada mediante expresiones como:
-
-```text
-EPSG:4326
-```
-
-La estructura general es:
-
-```text
-AUTORIDAD:CÓDIGO
-```
-
-Un código EPSG actúa como identificador de una definición formal de sistema de referencia de coordenadas.
-
----
-
-## 17. EPSG versus WKT
-
-Aunque identificadores como `EPSG:4326` son muy prácticos, un CRS contiene más información.
-
-El formato **WKT — Well Known Text** puede representar:
-
-- datum;
-- elipsoide;
-- meridiano de referencia;
-- ejes;
-- unidades;
-- método de proyección;
-- parámetros;
-- área de aplicación.
-
-En el trabajo cotidiano no es necesario memorizar la definición WKT completa, pero sí comprender que un código EPSG referencia una definición mucho más extensa.
-
----
-
-## 18. CRS en Python
-
-En GeoPandas, el CRS puede consultarse mediante:
-
-```python
-gdf.crs
-```
-
-Por ejemplo:
-
-```python
-world.crs
-```
-
-Para saber si el CRS es geográfico:
-
-```python
-world.crs.is_geographic
-```
-
-Para obtener la autoridad y código:
-
-```python
-world.crs.to_authority()
-```
-
----
-
-## 19. `set_crs()` no es lo mismo que `to_crs()`
-
-### `set_crs()`
-
-Asigna o corrige la **definición** del CRS.
-
-```python
-gdf = gdf.set_crs(4326)
-```
-
-No modifica las coordenadas.
-
-Conceptualmente significa:
-
-> Estas coordenadas deben interpretarse utilizando este CRS.
-
-### `to_crs()`
-
-Transforma las coordenadas desde un CRS a otro.
-
-```python
-gdf_utm = gdf.to_crs(32718)
-```
-
-```text
-to_crs()
-↓
-Reproyección
-```
-
----
-
-## 20. Reproyección
-
-La **reproyección** consiste en transformar las coordenadas desde un CRS hacia otro conservando la localización geográfica de las entidades.
-
-Por ejemplo:
-
-```python
-gdf_utm = gdf.to_crs(32718)
-```
-
-Después de la transformación:
-
-```text
-antes:
-(-73.05, -36.82)
-
-después:
-(x metros, y metros)
-```
-
-Las coordenadas cambian, pero la posición geográfica representada sigue siendo la misma.
-
----
-
-## 21. El CRS adecuado depende del objetivo
-
-No existe un único CRS óptimo para todas las tareas.
-
-| Objetivo | CRS conveniente |
+| Necesidad | Qué comprobar |
 |---|---|
-| GPS / intercambio global | WGS84 |
-| visualización web | CRS compatible con web |
-| medir superficie agrícola | CRS proyectado apropiado |
-| calcular buffers | CRS proyectado |
-| análisis regional | CRS proyectado regional |
-| integración de capas | CRS común |
+| Intercambio en longitud/latitud | Referencia, orden de coordenadas y requisitos del formato |
+| Medir áreas o buffers de un predio | Unidades, zona de uso y distorsión local del CRS |
+| Comparar superficies regionales | Conveniencia de una proyección equivalente |
+| Integrar vector y ráster | Transformar las geometrías al CRS del ráster cuando sea suficiente |
+| Combinar rásteres celda a celda | CRS y cuadrículas coincidentes: resolución, origen y cobertura de trabajo |
 
-Dentro de un mismo proyecto es válido utilizar distintos CRS para distintas etapas.
+Usar distintos CRS en distintas etapas es válido. No es necesario reproyectar todas las capas cada vez que se abre un proyecto.
 
----
+## 5. Objetos vectoriales y CRS en Python
 
-## 22. Caso aplicado: agricultura de precisión
+### 5.1. Qué contiene cada objeto
 
-Supongamos que disponemos de:
+| Objeto | Biblioteca | Contenido |
+|---|---|---|
+| Geometría individual | Shapely | Un punto, línea o polígono; no almacena por sí solo el CRS |
+| `GeoSeries` | GeoPandas | Una serie de geometrías con referencia espacial asociada |
+| `GeoDataFrame` | GeoPandas | Una tabla de atributos con una columna de geometría activa |
 
-- límites vectoriales de un predio;
-- puntos de muestreo de suelo;
-- un modelo digital de elevación;
-- una imagen Sentinel-2;
-- líneas de drenaje;
-- puntos de rendimiento de una cosechadora.
+Una operación como `parcelas.area` devuelve una serie numérica; `parcelas.buffer(100)` devuelve una `GeoSeries`. No todas las operaciones conservan automáticamente la tabla de atributos.
 
-Una estrategia de trabajo podría ser:
+### 5.2. Consultar antes de transformar
 
-```text
-1. Revisar CRS de cada dataset
-             ↓
-2. Identificar área común de estudio
-             ↓
-3. Seleccionar CRS de trabajo
-             ↓
-4. Reproyectar las capas necesarias
-             ↓
-5. Realizar análisis espacial
-             ↓
-6. Calcular distancias y superficies
-             ↓
-7. Generar mapas y resultados
-```
-
-Un análisis puede ser estadísticamente correcto y, aun así, ser geográficamente incorrecto si los CRS se manejan mal.
-
----
-
-## 21. Errores frecuentes
-
-### Error 1: creer que las coordenadas contienen por sí solas toda la información
-
-```text
-x = -73
-y = -36
-```
-
-Sin CRS, estas coordenadas son ambiguas.
-
-### Error 2: interpretar grados como metros
-
-```python
-gdf.buffer(100)
-```
-
-si `gdf.crs` es EPSG:4326.
-
-### Error 3: calcular áreas directamente en longitud/latitud
-
-```python
-gdf.area
-```
-
-si los datos están en un CRS geográfico.
-
-### Error 4: superponer capas sin verificar sus CRS
-
-Dos capas pueden representar el mismo territorio y aun así utilizar coordenadas numéricamente muy diferentes.
-
-### Error 5: utilizar `set_crs()` para reproyectar
-
-```python
-gdf.set_crs(32718)
-```
-
-cuando las coordenadas originales corresponden a EPSG:4326.
-
-Esto cambia la definición del CRS, pero no transforma las coordenadas.
-
-### Error 6: pensar que EPSG:4326 siempre es el mejor CRS
-
-WGS84 es muy útil para intercambio y posicionamiento global, pero no necesariamente para medir superficies, distancias o generar buffers.
-
----
-
-## 22. Secuencia recomendada antes de cualquier análisis
-
-Un hábito recomendable es comenzar con:
-
-```python
-print(gdf.crs)
-```
-
-y preguntarse:
-
-1. ¿Tiene CRS?
-2. ¿Es geográfico o proyectado?
-3. ¿Cuáles son sus unidades?
-4. ¿El CRS es apropiado para el territorio?
-5. ¿El CRS es apropiado para la operación?
-6. ¿Todas las capas utilizan un CRS compatible?
-
----
-
-## 27. Ejemplo básico en GeoPandas
+Este fragmento requiere un archivo propio, `parcelas.gpkg`:
 
 ```python
 import geopandas as gpd
 
 parcelas = gpd.read_file("parcelas.gpkg")
+if parcelas.crs is None:
+    raise ValueError("Falta el CRS: consultar la fuente antes de asignarlo")
 
 print(parcelas.crs)
+print(parcelas.crs.is_geographic)
+print(parcelas.crs.axis_info)       # Ejes y unidades
+print(parcelas.crs.to_authority())  # Puede devolver None
 ```
 
-Para saber si el CRS es geográfico:
+Los valores de coordenadas pueden dar pistas, pero no prueban el CRS. Si falta, hay que recurrir a la documentación o al proveedor de los datos.
+
+### 5.3. Asignar y transformar son operaciones diferentes
+
+| Método | Qué modifica | Cuándo usarlo |
+|---|---|---|
+| `set_crs()` | La definición asociada; conserva los números de las coordenadas | Se conoce el CRS original y falta su metadato |
+| `to_crs()` | Las coordenadas y el CRS asociado | Se necesita otra representación espacial de los mismos objetos |
 
 ```python
-parcelas.crs.is_geographic
+# Solo si la fuente confirma que estas coordenadas son WGS 84:
+parcelas = parcelas.set_crs("EPSG:4326")  # Cuando falta el CRS
+
+# Requiere que el CRS de origen ya esté correctamente definido:
+parcelas_utm = parcelas.to_crs("EPSG:32718")
+parcelas_utm["area_ha"] = parcelas_utm.area / 10_000
 ```
 
-Para conocer las unidades:
+El ejemplo anterior muestra dos situaciones conceptuales; no hay que asignar `4326` a cualquier archivo antes de transformarlo. Sobrescribir un CRS existente es una corrección de metadatos que exige evidencia de que la definición anterior era incorrecta.
 
-```python
-parcelas.crs.axis_info
-```
+## 6. Georreferenciación y datos válidos en un ráster
 
-Para reproyectar:
+### 6.1. Valores, transformación y CRS
 
-```python
-parcelas_proj = parcelas.to_crs(32718)
-```
-
-Para calcular superficie:
-
-```python
-parcelas_proj["area_m2"] = parcelas_proj.area
-parcelas_proj["area_ha"] = parcelas_proj["area_m2"] / 10000
-```
-
-La secuencia lógica es:
-
-```text
-leer datos
-   ↓
-comprobar CRS
-   ↓
-seleccionar CRS adecuado
-   ↓
-reproyectar cuando corresponda
-   ↓
-realizar cálculos geométricos
-```
-
----
-
-## 28. CRS y datos ráster
-
-Los ráster también poseen un CRS.
-
-Con `rasterio`:
+Para ubicar un ráster necesitamos sus **valores**, la **transformación que relaciona índices y coordenadas** y el **CRS que interpreta esas coordenadas**. También son importantes dimensiones, bandas, tipo numérico y valor de ausencia.
 
 ```python
 import rasterio
 
-src = rasterio.open("dem.tif")
-
-print(src.crs)
+# Fragmento para un archivo propio:
+with rasterio.open("dem.tif") as src:
+    print(src.crs, src.transform, src.res, src.bounds)
+    print(src.width, src.height, src.count, src.nodata)
+    elevacion = src.read(1, masked=True)
 ```
 
-En un ráster también necesitamos conocer:
+`read(1)` devuelve una matriz `(filas, columnas)`; `read()` devuelve `(bandas, filas, columnas)`. Las bandas se numeran desde 1 en Rasterio, mientras que los índices de las matrices NumPy comienzan en 0.
 
-- número de filas y columnas;
-- tamaño de píxel;
-- origen;
-- transformación espacial.
+### 6.2. De una celda a su ubicación
 
-Conceptualmente:
+Para una cuadrícula sin rotación y orientada al norte, el origen suele ser la **esquina superior izquierda**. Con tamaño de celda de 10 m, origen `(500000, 5900000)` y fila/columna comenzando en cero, el centro de una celda es:
 
-```text
-ráster = valores + transformación espacial + CRS
+- `x = 500000 + (columna + 0.5) × 10`
+- `y = 5900000 - (fila + 0.5) × 10`
+
+Así, el centro de la celda `(0, 0)` es `(500005, 5899995)`. La coordenada y disminuye al avanzar hacia abajo por las filas. La transformación afín guarda esa relación; para cuadrículas rotadas se utiliza su forma general.
+
+```python
+from rasterio.transform import from_origin, xy
+
+transformacion = from_origin(500000, 5900000, 10, 10)
+print(xy(transformacion, 0, 0))  # Centro: (500005.0, 5899995.0)
 ```
 
----
+### 6.3. NoData no equivale a cero
 
+`NoData` indica ausencia de una observación válida. Puede codificarse mediante un número reservado, por ejemplo `-9999`, o mediante una máscara. `NaN` es una representación numérica de valor no definido en matrices de punto flotante. Un cero puede ser un valor real y no debe eliminarse sin consultar los metadatos.
+
+```python
+import numpy as np
+
+valores = np.array([0.0, 10.0, -9999.0])
+validos = valores[valores != -9999.0]
+print(validos.mean())  # 5.0: conserva el cero válido
+```
+
+`np.nanmean()` ignora `NaN`, pero no reconoce automáticamente un código como `-9999`. Con `src.read(1, masked=True)` se obtiene una matriz enmascarada que puede excluir los valores señalados como inválidos por el archivo. Antes de convertirla a `NaN`, hay que usar un tipo flotante.
+
+## 7. Reproyección, remuestreo e interacción ráster-vector
+
+### 7.1. Por qué reproyectar un ráster exige remuestrear
+
+En vectores se transforman las coordenadas de los vértices. En un ráster regular, las posiciones transformadas generalmente no forman otra cuadrícula regular coincidente. Se define entonces una **cuadrícula de destino** y se estiman sus valores a partir del ráster original: ese cálculo es el remuestreo.
+
+También se puede remuestrear sin cambiar de CRS, por ejemplo para alinear dos imágenes con distintos orígenes o tamaños de celda. En Rasterio, `rasterio.warp.reproject` permite ambos casos.
+
+| Datos y propósito | Método habitual | Interpretación |
+|---|---|---|
+| Clases de cobertura | Vecino más cercano | Conserva códigos existentes |
+| Clases al pasar a celdas mayores | Moda | Representa la clase dominante |
+| Elevación o reflectancia al interpolar | Bilineal | Estima valores usando celdas próximas |
+| Variable continua al agregar | Promedio | Resume los valores de la celda mayor |
+
+El método debe corresponder al significado de la variable: promediar códigos de suelo carece de sentido; promediar cantidades totales tampoco necesariamente conserva el total. Hay que distinguir magnitudes intensivas, como temperatura, y extensivas, como producción total.
+
+El procedimiento es: definir CRS y cuadrícula de destino, elegir método, calcular valores y actualizar metadatos —incluidos transformación, dimensiones y `NoData`—. Los bordes pueden incorporar celdas sin datos. Por esa modificación de los valores, cuando solo se necesita extraer información con polígonos suele ser preferible transformar los vectores al CRS del ráster.
+
+### 7.2. Igual CRS no significa igual cuadrícula
+
+Dos imágenes pueden compartir CRS y resolución, pero tener orígenes desplazados medio píxel. Sumar sus matrices por posición combinaría ubicaciones distintas. Para álgebra ráster se debe comprobar la correspondencia espacial entre celdas, además de dimensiones, bandas y validez de los valores.
+
+### 7.3. Seleccionar, recortar y resumir
+
+| Operación | Resultado | Ejemplo |
+|---|---|---|
+| Selección espacial | Conserva las entidades que cumplen una relación | Parcelas que intersectan una franja |
+| Recorte vectorial | Conserva la parte geométrica dentro del límite | Porción de cada parcela próxima al canal |
+| Máscara ráster | Marca como inválidas las celdas fuera de una geometría | Imagen limitada al predio |
+| Estadística zonal | Resume valores por zona | NDVI medio por parcela |
+| Rasterización | Convierte geometrías y atributos a una cuadrícula | Clase de manejo por píxel |
+| Vectorización | Convierte celdas o regiones a geometrías | Polígonos de cobertura |
+
+En extracciones por polígonos, incluir solo celdas cuyo centro cae dentro o incluir todas las tocadas (`all_touched=True`) puede cambiar el resultado, especialmente en parcelas pequeñas. Esta última opción no equivale a ponderar por la proporción exacta de celda cubierta. Al calcular frecuencias de clases, se deben excluir las celdas `NoData` del denominador válido.
 ## . Síntesis conceptual
 
 ![Esquema del flujo de trabajo con datos espaciales en Python](img/esquema-geocomputacion.webp)  
