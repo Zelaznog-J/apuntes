@@ -2,7 +2,7 @@
 
 # Apuntes de Riego por Goteo
 
-Nov 8, 2026 · @Javiera Francisca González Mardones
+Nov 8, 2026 · Javiera Francisca González Mardones
 
 ## 1. Diseño agronómico
 
