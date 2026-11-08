@@ -15,7 +15,6 @@ theme:
   palette:
     primary: custom
   features:
-    - navigation.tabs
     - navigation.sections
     - navigation.indexes
     - navigation.footer
@@ -61,8 +60,8 @@ plugins:
 nav:
   - Portafolio: https://zelaznog-j.github.io/
   - Inicio: index.md
+  - Aprendizaje Estadístico: Apuntes Introductorios al Aprendizaje Estadístico.md
+  - Riego por Goteo: Apuntes de Riego por Goteo.md
   - GeoComputación con Python:
       - geocomputacion/index.md
       - 1. Datos geográficos y SRC: geocomputacion/01-datos-geograficos-y-src.md
-  - Aprendizaje Estadístico: Apuntes Introductorios al Aprendizaje Estadístico.md
-  - Riego por Goteo: Apuntes de Riego por Goteo.md
