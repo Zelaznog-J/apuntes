@@ -64,3 +64,4 @@ nav:
   - GeoComputación con Python:
       - geocomputacion/index.md
       - 1. Datos geográficos y SRC: geocomputacion/01-datos-geograficos-y-src.md
+  - Aprendizaje Estadístico: Apuntes Introductorios al Aprendizaje Estadístico.md
