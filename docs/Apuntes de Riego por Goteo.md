@@ -1,3 +1,5 @@
+[← Volver al inicio](index.md)
+
 # Apuntes de Riego por Goteo
 
 Nov 8, 2026 · @Javiera Francisca González Mardones

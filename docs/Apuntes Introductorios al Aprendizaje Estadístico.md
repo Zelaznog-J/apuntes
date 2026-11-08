@@ -1,3 +1,5 @@
+[← Volver al inicio](index.md)
+
 # Introducción al Aprendizaje Estadístico (*Statistical Learning*)
 
 El aprendizaje estadístico (*statistical learning*) abarca un conjunto amplio de herramientas y enfoques diseñados para dar sentido a conjuntos de datos complejos. Se ha consolidado como un subcampo de la estadística enfocado en el modelado y la predicción, tanto en escenarios supervisados como no supervisados.
