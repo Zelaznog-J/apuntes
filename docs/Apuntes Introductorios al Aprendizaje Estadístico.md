@@ -128,3 +128,9 @@ Su propósito es estimar el error de prueba utilizando únicamente los datos de 
 *   **Validación cruzada en $K$ pliegues ($k$-Fold CV):** Divide los datos en $k$ grupos (típicamente $5$ o $10$):
     $$\text{CV}_{(k)} = \frac{1}{k} \sum_{i=1}^k \text{MSE}_i$$
     Ofrece el mejor compromiso empírico al equilibrar adecuadamente el sesgo y la varianza en comparación con LOOCV. En clasificación, el MSE se reemplaza por la proporción de elementos mal clasificados.
+
+---
+
+## Paradigmas del Aprendizaje Estadístico
+
+![Infografía de los paradigmas de aprendizaje estadístico: supervisado, no supervisado y semisupervisado](paradigmas-aprendizaje-estadistico.png)
