@@ -8,69 +8,69 @@ Determina cuánta agua necesita el cultivo, cómo se reparte con los emisores y 
 
 ### 1.1 Evapotranspiración del cultivo (ETc)
 
-```latex
+$$
 ET_c = ET_o \times K_c
-```
+$$
 
 ETc y ETo en mm/día; Kc adimensional.
 
 ### 1.2 Demanda bruta (Db)
 
-```latex
+$$
 D_b = \frac{ET_c}{E_a}
-```
+$$
 
 Ea = eficiencia de aplicación (0,9 en los apuntes). Se divide porque hay que aplicar más agua que la que consume el cultivo: con Ea = 0,9, Db es mayor que ETc.
 
 ### 1.3 Volumen de agua por planta y por hectárea
 
-```latex
+$$
 V_{planta} = D_b \times (DSH \times DEH)
-```
+$$
 
 V\_planta en L/planta/día, Db en mm/día, DSH (distancia sobre hilera) y DEH (distancia entre hileras) en m. Esto funciona porque 1 mm sobre 1 m² equivale a 1 L.
 
-```latex
+$$
 V_{ha} = D_b \times 10
-```
+$$
 
 V\_ha en m³/ha/día, porque 1 mm = 10 m³/ha.
 
 ### 1.4 Número de emisores por planta
 
-```latex
+$$
 n_e = \frac{DSH}{D_e} \times NL
-```
+$$
 
 De = distancia entre emisores (m); NL = número de líneas de riego por hilera. Se prueba primero con 1 emisor y se ajusta según el humedecimiento (1.9).
 
 ### 1.5 Precipitación del equipo (Pp)
 
-```latex
+$$
 P_p = \frac{q_e \times n_e}{DSH \times DEH}
-```
+$$
 
 Pp en mm/h; qe = caudal del emisor (L/h).
 
 ### 1.6 Tiempo de riego (TR)
 
-```latex
+$$
 TR = \frac{D_b}{P_p}
-```
+$$
 
 TR en h. Más demanda alarga el riego; más Pp lo acorta.
 
 ### 1.7 Agua aprovechable y lámina neta
 
-```latex
+$$
 HA = \frac{CC - PMP}{100} \times D_a \times D_z
-```
+$$
 
 HA en mm; CC y PMP en % (base peso seco); Da = densidad aparente (g/cm³); Dz = profundidad de raíces (mm).
 
-```latex
+$$
 LN = HA \times UR
-```
+$$
 
 UR = umbral de riego, como fracción (por ejemplo 0,4).
 
@@ -86,51 +86,51 @@ DH en m, qe en L/h. Depende de la textura del suelo:
 
 ### 1.9 Área y porcentaje de humedecimiento
 
-```latex
+$$
 AH = n_e \times \frac{\pi \, DH^2}{4}
-```
+$$
 
 Supone bulbos circulares que no se traslapan. Con goteros muy juntos el área real es una franja continua y esta fórmula la sobrestima.
 
-```latex
+$$
 PH = \frac{100 \times AH}{DSH \times DEH}
-```
+$$
 
 Criterio de los apuntes: PH ≥ 40 %. Si no se cumple, se agrega un emisor más por planta y se recalcula desde 1.5.
 
 ### 1.10 Frecuencia de riego (FR)
 
-```latex
+$$
 FR = \frac{LN \times PH/100}{ET_c}
-```
+$$
 
 PH entra como fracción (PH/100). Calcula PH (1.9) antes que FR. FR se redondea hacia abajo, a días enteros.
 
 ### 1.11 Sectores de riego
 
-```latex
+$$
 N_s = \frac{TO}{TR}
-```
+$$
 
 TO = tiempo de operación disponible (h/día). Ns se redondea hacia abajo, a un entero.
 
-```latex
+$$
 A_s = \frac{A_{total}}{N_s \times FR}
-```
+$$
 
 A\_s en ha: superficie de cada sector. En un día de riego operan Ns sectores, y cada sector se riega una vez cada FR días.
 
 ### 1.12 Emisores por sector y caudal del sector
 
-```latex
+$$
 N_{e/s} = \frac{A_s}{D_e \times DEH} \times NL
-```
+$$
 
 Usa A\_s (convertida a m²: 1 ha = 10 000 m²), no A\_total.
 
-```latex
+$$
 Q_s = N_{e/s} \times q_e
-```
+$$
 
 Qs sale en L/h; se divide por 3600 para L/s. Se compara con el caudal máximo disponible Qmáx.
 
@@ -140,15 +140,15 @@ Si el caudal del sector (Qs, calculado en 1.12) supera el caudal máximo que ent
 
 Para calcular esa área se escribe el caudal del sector en función de su superficie. Plantas en el sector × emisores por planta × caudal de cada emisor, pasado de L/h a L/s:
 
-```latex
+$$
 Q_{m\acute{a}x} = \frac{A_s \times 10\,000}{DSH \times DEH} \times n_e \times \frac{q_e}{3600}
-```
+$$
 
 Despejando A\_s (y pasando de m² a ha, dividiendo por 10 000) queda:
 
-```latex
+$$
 A_{s,corr} = \frac{0{,}36 \times DSH \times DEH \times Q_{m\acute{a}x}}{n_e \times q_e}
-```
+$$
 
 Variables y unidades:
 
@@ -171,9 +171,9 @@ Consecuencia: cada sector baja de 2 ha a 0,9 ha, así que el área regable es A\
 
 ### 1.14 Uniformidad de distribución
 
-```latex
+$$
 CU = \frac{Q_{25\%}}{Q_{prom}} \times 100
-```
+$$
 
 Q25 % = caudal promedio del 25 % de los emisores con menor caudal; Qprom = caudal promedio de todos los aforados. Criterio: CU > 80 %. Si no se cumple, hay que buscar las causas (obstrucción, presión, filtración). Para el tiempo de riego, usar el caudal promedio aforado y considerar CU.
 
@@ -187,9 +187,9 @@ Cuando el agua circula por una tubería pierde energía por roce con las paredes
 
 La fórmula estándar de Hazen-Williams, en unidades del Sistema Internacional, es:
 
-```latex
+$$
 J = \frac{10{,}67 \times Q^{1{,}852}}{C^{1{,}852} \times D^{4{,}87}}
-```
+$$
 
 con Q en m³/s, D en m y J en m/m. Vale para agua a temperatura ambiente en flujo turbulento.
 
@@ -234,65 +234,65 @@ Un C mayor significa menos fricción. Verificar valores.
 
 ### 2.3 Factor de salidas múltiples (FSM)
 
-```latex
+$$
 FSM = \frac{1}{\beta + 1} + \frac{1}{2n} + \frac{\sqrt{\beta - 1}}{6 n^2}
-```
+$$
 
 n = número de salidas (emisores o laterales). β es el exponente de Q en la fórmula de pérdidas: con Hazen-Williams es 1,852. El FSM reduce la pérdida porque el caudal disminuye a lo largo de la tubería.
 
 ### 2.4 Lateral
 
-```latex
+$$
 H_{f,lateral} = J \times L \times FSM
-```
+$$
 
-```latex
+$$
 P_{in,lateral} = P_{op} + H_{f,lateral} \pm \Delta Z
-```
+$$
 
 L en m. Pop = presión de operación del emisor más crítico (el más desfavorable hidráulicamente, normalmente el último del lateral). ΔZ es la diferencia de cota entre la entrada y el final del lateral: suma si el lateral sube, resta si baja. Como Pop es la presión del emisor más crítico, Pop + Hf garantiza que ese emisor reciba al menos la presión de diseño.
 
 ### 2.5 Port lateral (tubería terciaria)
 
-```latex
+$$
 H_{f,port} = J \times L \times FSM
-```
+$$
 
-```latex
+$$
 P_{in,port} = P_{in,lateral} + H_{f,port} \pm \Delta Z
-```
+$$
 
 Alimenta a los laterales, por eso también lleva FSM (n = número de laterales).
 
 ### 2.6 Tubería matriz
 
-```latex
+$$
 H_{f,matriz} = J \times L
-```
+$$
 
-```latex
+$$
 P_{in,matriz} = P_{in,port} + H_{f,matriz} \pm \Delta Z
-```
+$$
 
 Sin FSM, porque transporta el caudal completo en todo su largo.
 
 ### 2.7 Singularidades y pérdida total
 
-```latex
+$$
 H_s = 0{,}2 \times H_f
-```
+$$
 
-```latex
+$$
 H_f = H_{f,lateral} + H_{f,port} + H_{f,matriz}
-```
+$$
 
 Hs = pérdidas por codos, válvulas, uniones y cambios de sección; los apuntes usan 20 % de Hf.
 
 ### 2.8 Carga dinámica total (CDT)
 
-```latex
+$$
 CDT = H_g + P_{op} + H_f + H_s + H_{cab}
-```
+$$
 
 - Hg: altura geométrica (succión + impulsión).
 - Pop: presión de operación del emisor más crítico.
@@ -304,13 +304,13 @@ Todo en m.c.a. (1 bar ≈ 10,2 m.c.a.). La CDT y el caudal Qs definen la bomba.
 
 ### 2.9 Velocidad del agua
 
-```latex
+$$
 V = \frac{Q}{A} = \frac{4\,Q}{\pi \, D_i^2}
-```
+$$
 
-```latex
+$$
 D_i = D_e - 2e
-```
+$$
 
 V en m/s; Q en m³/s; Di = diámetro interno (m); De = diámetro exterior; e = espesor de pared. Criterio de diseño: 0,5 a 2 m/s, y en PVC conviene no pasar de unos 1,5 m/s.
 
