@@ -134,3 +134,9 @@ Su propósito es estimar el error de prueba utilizando únicamente los datos de 
 ## Paradigmas del Aprendizaje Estadístico
 
 ![Infografía de los paradigmas de aprendizaje estadístico: supervisado, no supervisado y semisupervisado](paradigmas-aprendizaje-estadistico.png)
+
+---
+
+## Referencia bibliográfica
+
+James, G., Witten, D., Hastie, T., Tibshirani, R. y Taylor, J. (2023). *An Introduction to Statistical Learning: With Applications in Python*. Springer. [https://www.statlearning.com/](https://www.statlearning.com/)
